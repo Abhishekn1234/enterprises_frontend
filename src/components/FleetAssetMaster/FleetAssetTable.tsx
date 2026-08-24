@@ -46,12 +46,12 @@ export default function FleetAssetTable({
   onDelete,
 }: FleetAssetTableProps) {
   if (isLoading) {
-    return (
-      <div className="p-10 text-center text-sm">
-        Loading fleet assets...
-      </div>
-    )
-  }
+  return (
+    <div className="flex min-h-[300px] items-center justify-center">
+      <Loader2 className="text-muted-foreground h-6 w-6 animate-spin" />
+    </div>
+  )
+}
 
   if (!assets.length) {
     return (
