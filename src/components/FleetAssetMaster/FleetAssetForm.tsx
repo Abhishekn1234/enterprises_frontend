@@ -59,47 +59,55 @@ export default function FleetAssetForm({
     data: existingAsset,
     isLoading: isLoadingAsset,
   } = useFleetAsset(assetId)
-
+  
   const isSubmitting =
     createMutation.isPending ||
     updateMutation.isPending
 
-  useEffect(() => {
-    if (!open) {
-      form.reset(defaultValues)
-      return
+ useEffect(() => {
+  if (!open) {
+    form.reset(defaultValues)
+    return
+  }
+
+  if (isEdit && existingAsset) {
+    console.log('========== EDIT ASSET ==========')
+    console.log('existingAsset:', existingAsset)
+    console.log('tyreSpecifications:', existingAsset.tyreSpecifications)
+
+    const editValues = {
+      assetCode: existingAsset.assetCode ?? '',
+      assetName: existingAsset.assetName ?? '',
+      assetType: existingAsset.assetType ?? 'Tyre',
+      brand: existingAsset.brand ?? '',
+      model: existingAsset.model ?? '',
+      status: existingAsset.status ?? 'Active',
+      description: existingAsset.description ?? '',
+
+      tyreSpecifications: {
+        tyreSize: existingAsset.tyreSpecifications?.tyreSize ?? '',
+        construction:
+          existingAsset.tyreSpecifications?.construction ?? 'Radial',
+        pattern: existingAsset.tyreSpecifications?.pattern ?? '',
+        loadIndex: existingAsset.tyreSpecifications?.loadIndex ?? '',
+        speedRating: existingAsset.tyreSpecifications?.speedRating ?? '',
+        plyRating: existingAsset.tyreSpecifications?.plyRating ?? '',
+        tubeType:
+          existingAsset.tyreSpecifications?.tubeType ?? 'Tubeless',
+      },
     }
 
-    if (isEdit && existingAsset) {
-      form.reset({
-        assetCode: existingAsset.assetCode ?? '',
-        assetName: existingAsset.assetName ?? '',
-        assetType: existingAsset.assetType ?? 'Tyre',
-        brand: existingAsset.brand ?? '',
-        model: existingAsset.model ?? '',
-        status: existingAsset.status ?? 'Active',
-        description: existingAsset.description ?? '',
-        tyreSpecifications: {
-          tyreSize:
-            existingAsset.tyreSpecifications?.tyreSize ?? '',
-          construction:
-            existingAsset.tyreSpecifications?.construction ??
-            'Radial',
-          pattern:
-            existingAsset.tyreSpecifications?.pattern ?? '',
-          loadIndex:
-            existingAsset.tyreSpecifications?.loadIndex ?? '',
-          speedRating:
-            existingAsset.tyreSpecifications?.speedRating ?? '',
-          plyRating:
-            existingAsset.tyreSpecifications?.plyRating ?? '',
-          tubeType:
-            existingAsset.tyreSpecifications?.tubeType ??
-            'Tubeless',
-        },
-      })
-    }
-  }, [open, isEdit, existingAsset, form])
+    console.log('FORM RESET VALUES:', editValues)
+
+    form.reset(editValues)
+
+    console.log('AFTER RESET:', form.getValues())
+    console.log(
+      'AFTER RESET TYRE:',
+      form.getValues('tyreSpecifications')
+    )
+  }
+}, [open, isEdit, existingAsset, form])
 
   const onSubmit = async (
     values: FleetAssetFormValues,

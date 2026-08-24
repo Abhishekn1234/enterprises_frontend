@@ -1,9 +1,3 @@
-
-import {
-  Control,
-  FieldPath,
-  FieldValues,
-} from 'react-hook-form'
 import {
   FormControl,
   FormField,
@@ -20,74 +14,102 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 
-interface SelectFieldProps<
-  TFieldValues extends FieldValues,
-> {
-  control: Control<TFieldValues>
-  name: FieldPath<TFieldValues>
-  label: string
-  options: string[]
-  placeholder?: string
-  disabled?: boolean
-}
-
-export function SelectField<
-  TFieldValues extends FieldValues,
->({
+export function SelectField({
   control,
   name,
   label,
   options,
-  placeholder = 'Select an option',
-  disabled = false,
-}: SelectFieldProps<TFieldValues>) {
+}: {
+  control: any
+  name: string
+  label: string
+  options: string[]
+}) {
   return (
     <FormField
       control={control}
       name={name}
-      render={({ field }) => (
-        <FormItem className="w-full">
-          <FormLabel>{label}</FormLabel>
+      render={({ field }) => {
+        const currentValue = field.value ?? ''
 
-          <Select
-            value={field.value ?? ''}
-            onValueChange={field.onChange}
-            disabled={disabled}
-          >
-            <FormControl>
-              <SelectTrigger className="h-10 w-full bg-white">
-                <SelectValue placeholder={placeholder} />
-              </SelectTrigger>
-            </FormControl>
+        // Make sure the edit value is available in the dropdown.
+        // Example: API returns "Bias" but options may not contain it.
+        const selectOptions = currentValue &&
+          !options.includes(currentValue)
+          ? [currentValue, ...options]
+          : options
 
-            <SelectContent
-              position="popper"
-              sideOffset={5}
-              className="
-                z-[9999]
-                max-h-60
-                w-[var(--radix-select-trigger-width)]
-                overflow-y-auto
-                bg-white
-                shadow-lg
-                border
-              "
+        return (
+          <FormItem className="space-y-2">
+            <FormLabel className="text-sm font-medium text-slate-700">
+              {label}
+            </FormLabel>
+
+            <Select
+              value={currentValue}
+              onValueChange={(value) => {
+                field.onChange(value)
+              }}
             >
-              {options.map((option) => (
-                <SelectItem
-                  key={option}
-                  value={option}
-                  className="cursor-pointer"
+              <FormControl>
+                <SelectTrigger
+                  className="
+                    h-10
+                    w-full
+                    rounded-md
+                    border-slate-300
+                    bg-white
+                    px-3
+                    text-sm
+                    text-slate-900
+                    shadow-sm
+                    transition-all
+                    hover:border-slate-400
+                    focus:border-slate-500
+                    focus:ring-2
+                    focus:ring-slate-200
+                    data-[placeholder]:text-slate-400
+                  "
                 >
-                  {option}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+                  <SelectValue
+                    placeholder={`Select ${label.replace(' *', '')}`}
+                  />
+                </SelectTrigger>
+              </FormControl>
 
-          <FormMessage />
-        </FormItem>
-      )}
+              <SelectContent
+                className="
+                  rounded-md
+                  border-slate-200
+                  bg-white
+                  shadow-lg
+                "
+              >
+                {selectOptions.map((option) => (
+                  <SelectItem
+                    key={option}
+                    value={option}
+                    className="
+                      cursor-pointer
+                      rounded-sm
+                      px-3
+                      py-2
+                      text-sm
+                      text-slate-700
+                      focus:bg-slate-100
+                      focus:text-slate-900
+                    "
+                  >
+                    {option}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <FormMessage className="text-xs" />
+          </FormItem>
+        )
+      }}
     />
   )
 }
