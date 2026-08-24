@@ -3,6 +3,7 @@ import {
   Eye,
   Pencil,
   Trash2,
+  Loader2,
 } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
@@ -68,13 +69,14 @@ export default function FleetAssetTable({
 
   return (
     <div className="relative">
-      {isFetching && (
-        <div className="bg-background/60 absolute inset-0 z-10 flex items-start justify-center pt-6 backdrop-blur-[1px]">
-          <span className="text-muted-foreground text-sm">
-            Updating...
-          </span>
+            {isFetching && (
+        <div className="bg-background/60 absolute inset-0 z-10 flex items-center justify-center backdrop-blur-[1px]">
+            <div className="text-muted-foreground flex items-center gap-2 text-sm">
+            <Loader2 className="h-5 w-5 animate-spin" />
+            
+            </div>
         </div>
-      )}
+        )}
 
       <div className="overflow-x-auto">
         <Table>
