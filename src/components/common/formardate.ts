@@ -1,0 +1,14 @@
+export function formatDate(
+  value?: string | Date,
+) {
+  if (!value) return '-'
+
+  return new Date(value).toLocaleDateString(
+    'en-IN',
+    {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+    },
+  )
+}
